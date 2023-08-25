@@ -1,0 +1,57 @@
+:root {
+    --primary-color: #4CAF50;
+    --red-color: #f44336;
+}
+
+body,
+body>div {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100vw;
+    font-size: 15px;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+
+button,
+input {
+    border: none;
+    padding: 0.25em 1em;
+    font-size: 1.25em;
+    border-radius: 0.25em;
+    box-shadow: inset 1px;
+    transition-duration: 0.4s;
+}
+
+button {
+    background-color: var(--primary-color);
+    color: white;
+    cursor: pointer;
+    height: 2em;
+    max-height: 2em;
+}
+
+button:hover {
+    border: 1px solid var(--primary-color);
+    color: var(--primary-color);
+    background-color: white;
+}
+
+button.red {
+    background-color: var(--red-color);
+}
+
+button.red:hover,
+input.red {
+    border: 1px solid var(--red-color);
+    color: var(--red-color);
+}
+
+input {
+    border: 1px solid var(--primary-color);
+    color: black;
+    background-color: white;
+}

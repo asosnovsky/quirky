@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+
+    <head>
+        <meta charset="utf-8" />
+        <title>Quirky</title>
+
+        <link rel="stylesheet" href="styles/index.css">
+    </head>
+
+    <body>
+        <div id="main-menu">
+            <template id="player-name">
+                <div class="player">
+                    <label for="player-name">Player Name</label>
+                    <input class="player-name"><button class="remove red">-</button>
+                    <span class="error">Invalid!</span>
+                </div>
+            </template>
+            <h1>Quirky</h1>
+            <div id="names">
+            </div>
+            <div class="buttons">
+                <button id="add-name">+</button>
+                <button id="start-game">Start 🎬</button>
+            </div>
+        </div>
+        <div id="game">
+            <div id="hover-box">
+                <span>
+                    <b>Deck:</b> <span id="cards-in-deck">0</span>
+                </span>
+                <span id="players-box">
+                    <b>Players:</b>
+                    <div id="players"></div>
+                </span>
+            </div>
+            <div id="board">
+                <svg xmlns="http://www.w3.org/2000/svg"></svg>
+            </div>
+            <div id="hand">
+                <div id="current-player">
+                    <span id="name">NAME</span>
+                    (<span id="card-count">0</span>)
+                </div>
+                <div id="cards"></div>
+            </div>
+            <div id="bottom-bar">
+                <button id="undo">Undo ↩️</button>
+                <button id="end-turn">End Turn</button>
+            </div>
+        </div>
+        <script type="module" src="./app.ts"></script>
+    </body>
+
+</html>

@@ -1,0 +1,54 @@
+#main-menu>h1 {
+    font-family: fantasy;
+    margin-bottom: 0.1em;
+    font-size: 4em;
+    color: var(--primary-color);
+}
+
+#main-menu #names {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25em;
+}
+
+#main-menu .buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    align-items: center;
+    gap: 0.1em;
+}
+
+#main-menu #names .player {
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+    align-items: center;
+    gap: 1.2em 0.1em;
+    position: relative;
+    margin-bottom: 1em;
+}
+
+#main-menu #names .player input {
+    width: 100%;
+}
+
+#main-menu #names .player label {
+    position: absolute;
+    font-size: 0.75em;
+    top: -1.15em;
+    left: 0.25em;
+}
+
+#main-menu #names .player .error {
+    display: none;
+}
+
+#main-menu #names .player.errored .error {
+    display: block;
+    position: absolute;
+    font-size: 0.75em;
+    top: -1.15em;
+    right: 0.25em;
+    color: var(--red-color);
+}
