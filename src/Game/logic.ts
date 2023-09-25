@@ -1,3 +1,4 @@
+import { CardBoardMap } from "./CardBoardMap";
 import { GameBoardState, GamePiece, Positionable } from "./types";
 
 export const Border = () => {
@@ -101,4 +102,58 @@ export const figureDirection = (p1: Positionable, p2: Positionable): GameBoardSt
     } else {
         return null;
     }
+}
+
+export const makeComputeBoundaries = (
+    placedCards: GameBoardState['placedCards'],
+    lastPlacedPCardIndices: GameBoardState['lastPlacedPCardIndices'],
+) => (along: number = 0): [number, number] => lastPlacedPCardIndices.reduce<[number, number]>(([mn, mx], i) => {
+    const yy = placedCards[i].pos[along];
+    return [Math.max(mn, yy), Math.min(mx, yy)]
+}, [-Number.MAX_VALUE, Number.MAX_VALUE])
+
+export const computeCurrentPlacementScore = ({
+    placedCards,
+    lastPlacedPCardIndices,
+    currentDirection,
+}: {
+    placedCards: GameBoardState['placedCards'],
+    lastPlacedPCardIndices: GameBoardState['lastPlacedPCardIndices'],
+    currentDirection: GameBoardState['currentDirection'],
+}): number => {
+    let runningTotal = 0;
+    const pMap = new CardBoardMap(placedCards);
+    lastPlacedPCardIndices.forEach((ci, ii) => {
+        const [x, y] = placedCards[ci].pos;
+        let okL = (currentDirection !== '⭥' || ii === 0),
+            okR = (currentDirection !== '⭥' || ii === 0),
+            okU = (currentDirection !== '⟷' || ii === 0),
+            okD = (currentDirection !== '⟷' || ii === 0);
+        let d = 1;
+        while (okL || okR || okD || okU) {
+            if (okL && (pMap.get(x - d, y) !== null)) {
+                runningTotal += (d === 1 ? 2 : 1)
+            } else {
+                okL = false
+            }
+            if (okR && (pMap.get(x + d, y) !== null)) {
+                runningTotal += ((d === 1 && !okL) ? 2 : 1)
+            } else {
+                okR = false
+            }
+            if (okU && (pMap.get(x, y + d) !== null)) {
+                runningTotal += (d === 1 ? 2 : 1)
+            } else {
+                okU = false
+            }
+            if (okD && (pMap.get(x, y - d) !== null)) {
+                runningTotal += ((d === 1 && !okU) ? 2 : 1)
+            } else {
+                okD = false
+            }
+            d += 1
+        }
+    })
+
+    return runningTotal
 }

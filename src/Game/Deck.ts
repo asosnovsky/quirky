@@ -1,9 +1,10 @@
+import { PIECE_DUPLICATES } from "../constants";
 import { randomIndex } from "../helpers";
 import { GamePiece, GamePieceColors, GamePiecePictures } from "./types";
 
 const createDeck = (): GamePiece[] => {
     const deck: GamePiece[] = [];
-    for (let _ = 0; _ < 3; _++) {
+    for (let _ = 0; _ < PIECE_DUPLICATES; _++) {
         Object.keys(GamePieceColors).forEach((color: any) =>
             Object.keys(GamePiecePictures).forEach((picture: any) => deck.push({
                 color, picture,

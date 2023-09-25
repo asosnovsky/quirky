@@ -49,6 +49,8 @@ export class Game {
             const elm = document.createElement('span')
             elm.innerText = GamePiecePictures[card.picture]
             elm.style.background = GamePieceColors[card.color]
+            elm.setAttribute('card-color', card.color)
+            elm.setAttribute('card-picture', card.picture)
             if (i === this.board.currentCardIndex) {
                 elm.className = "selected"
             }

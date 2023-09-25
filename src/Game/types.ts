@@ -1,10 +1,10 @@
 export const GamePieceColors = {
-    red: '#F00',
-    green: '#0F0',
-    blue: '#6da2fb',
-    yellow: '#0AA',
-    orange: '#AA0',
-    purple: '#A0A',
+    red: '#FF3333',
+    green: '#33FF33',
+    blue: '#d3a7ff',
+    yellow: '#FFFF33',
+    orange: '#ff9333',
+    purple: '#9933FF',
 } as const
 
 export const GamePiecePictures = {

@@ -1,6 +1,6 @@
 import { randomIndex } from "../helpers";
 import { Deck } from "./Deck";
-import { figureDirection } from "./logic";
+import { computeCurrentPlacementScore, figureDirection } from "./logic";
 import { GameBoardState, GamePiece, Player } from "./types";
 
 export class ManagedGameState {
@@ -114,6 +114,7 @@ export class ManagedGameState {
     }
 
     nextTurn() {
+        this.currentPlayer.points += computeCurrentPlacementScore(this.state);
         this.saveHistory();
         this.ensureAllHaveCards();
         this.swithToNextPlayer();
