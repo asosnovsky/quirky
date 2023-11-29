@@ -1,5 +1,6 @@
 import { QuirkyElements } from "../elements";
 import { SvgBoard } from "./SvgBoard";
+import { ComputedScore } from "./logic";
 import { ManagedGameState } from "./state";
 import { GamePieceColors, GamePiecePictures, Player } from "./types";
 
@@ -76,10 +77,16 @@ export class Game {
         })
     }
 
-    drawPoints(pts: number, next: () => void) {
+    drawPoints({pts, quirky}: ComputedScore, next: () => void) {
         const pElm = document.createElement('span');
         pElm.innerText = `+${pts}pts`
         pElm.className = "points"
+        if(quirky) {
+            const iElm = document.createElement('i');
+            iElm.classList.add('icon')
+            iElm.classList.add('baloons')
+            pElm.append(iElm)
+        }
         this.qElms.hoverPlayers.append(pElm);
         const baseStart = 3;
         const size = baseStart + 2 * (1 - Math.exp(-pts));
@@ -100,11 +107,11 @@ export class Game {
     }
 
     nextTurn() {
-        const pts = this.board.nextTurn();
+        const {pts, quirky} = this.board.nextTurn();
         console.log(pts);
         if(pts > 0) {
             this.drawHand(this.board.currentPlayer);
-            this.drawPoints(pts, () => {
+            this.drawPoints({pts, quirky}, () => {
                 this.drawHoverBox();
                 this.svgBoard.render(this.board.export()['state']);
             });

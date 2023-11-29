@@ -72,7 +72,7 @@ describe('computeCurrentPlacementScore', () => {
                     [makeCard('blue', 'bear', [0, 0]),
                     makeCard('blue', 'whale', [0, 1])],
                 )
-            )).toBe(2)
+            ).pts).toBe(2)
         })
         test('vertically', () => {
             expect(computeCurrentPlacementScore(
@@ -83,7 +83,7 @@ describe('computeCurrentPlacementScore', () => {
                         makeCard('blue', 'whale', [1, 0]),
                     ],
                 )
-            )).toBe(2)
+            ).pts).toBe(2)
         })
     })
     describe('should compute score when follow up are placed', () => {
@@ -99,7 +99,7 @@ describe('computeCurrentPlacementScore', () => {
                         makeCard('blue', 'monkey', [1, 2]),
                     ],
                 )
-            )).toBe(3)
+            ).pts).toBe(3)
         })
         test('horizontally on 1 piece', () => {
             expect(computeCurrentPlacementScore(
@@ -113,7 +113,7 @@ describe('computeCurrentPlacementScore', () => {
                         makeCard('blue', 'monkey', [2, 1]),
                     ],
                 )
-            )).toBe(5)
+            ).pts).toBe(5)
         })
         test('vertically on 1 piece', () => {
             expect(computeCurrentPlacementScore(
@@ -126,7 +126,7 @@ describe('computeCurrentPlacementScore', () => {
                         makeCard('blue', 'owl', [1, -1]),
                     ],
                 )
-            )).toBe(2)
+            ).pts).toBe(2)
         })
         test('vertically on same 2 pieces', () => {
             expect(computeCurrentPlacementScore(
@@ -140,7 +140,7 @@ describe('computeCurrentPlacementScore', () => {
                         makeCard('blue', 'owl', [1, -2]),
                     ],
                 )
-            )).toBe(3)
+            ).pts).toBe(3)
         })
         test('vertically on one piece', () => {
             expect(computeCurrentPlacementScore(
@@ -153,7 +153,7 @@ describe('computeCurrentPlacementScore', () => {
                         makeCard('green', 'cow', [1, 1]),
                     ],
                 )
-            )).toBe(4)
+            ).pts).toBe(4)
         })
         test('vertically 1 on 2', () => {
             expect(computeCurrentPlacementScore(
@@ -166,8 +166,72 @@ describe('computeCurrentPlacementScore', () => {
                         makeCard('yellow', 'bear', [1, 0]),
                     ],
                 )
-            )).toBe(3)
+            ).pts).toBe(3)
         })
+    })
+    describe('should compute score with quirky', () => {
+        test('simple case', () => {
+            expect(computeCurrentPlacementScore(
+                makeInput(
+                    [
+                    ],
+                    [
+                        makeCard('blue', 'bear', [0, 0]),
+                        makeCard('blue', 'whale', [1, 0]),
+                        makeCard('blue', 'cat', [2, 0]),
+                        makeCard('blue', 'cow', [3, 0]),
+                        makeCard('blue', 'monkey', [4, 0]),
+                        makeCard('blue', 'owl', [5, 0]),
+                    ],
+                )
+            )).toStrictEqual({pts: 12, quirky: true})
+        })
+        expect(computeCurrentPlacementScore(
+            makeInput(
+                [
+                ],
+                [
+                    makeCard('blue', 'bear', [0, 0]),
+                    makeCard('green', 'bear', [0, 1]),
+                    makeCard('orange', 'bear', [0, 2]),
+                    makeCard('purple', 'bear', [0, 3]),
+                    makeCard('red', 'bear', [0, 4]),
+                    makeCard('yellow', 'bear', [0, 5]),
+                ],
+            )
+        )).toStrictEqual({pts: 12, quirky: true})
+    })
+    test('quirky with some extra points case', () => {
+        expect(computeCurrentPlacementScore(
+            makeInput(
+                [
+                    makeCard('red', 'bear', [0, -1]),
+                ],
+                [
+                    makeCard('blue', 'bear', [0, 0]),
+                    makeCard('blue', 'whale', [1, 0]),
+                    makeCard('blue', 'cat', [2, 0]),
+                    makeCard('blue', 'cow', [3, 0]),
+                    makeCard('blue', 'monkey', [4, 0]),
+                    makeCard('blue', 'owl', [5, 0]),
+                ],
+            )
+        )).toStrictEqual({pts: 14, quirky: true})
+        expect(computeCurrentPlacementScore(
+            makeInput(
+                [
+                    makeCard('red', 'bear', [1, 0]),
+                ],
+                [
+                    makeCard('blue', 'bear', [0, 0]),
+                    makeCard('green', 'bear', [0, 1]),
+                    makeCard('orange', 'bear', [0, 2]),
+                    makeCard('purple', 'bear', [0, 3]),
+                    makeCard('red', 'bear', [0, 4]),
+                    makeCard('yellow', 'bear', [0, 5]),
+                ],
+            )
+        )).toStrictEqual({pts: 14, quirky: true})
     })
 })
 

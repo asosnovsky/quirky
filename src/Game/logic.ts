@@ -189,6 +189,10 @@ export const figureDirection = (p1: Positionable, p2: Positionable): GameBoardSt
     }
 }
 
+export type ComputedScore = {
+    pts: number;
+    quirky: boolean;
+}
 export const computeCurrentPlacementScore = ({
     placedCards,
     lastPlacedPCardIndices,
@@ -197,7 +201,7 @@ export const computeCurrentPlacementScore = ({
     placedCards: GameBoardState['placedCards'],
     lastPlacedPCardIndices: GameBoardState['lastPlacedPCardIndices'],
     currentDirection: GameBoardState['currentDirection'],
-}): number => {
+}): ComputedScore => {
     let quirkyMoves = 0;
     let runningTotal = 0;
     const pMap = new CardBoardMap(placedCards);
@@ -246,5 +250,5 @@ export const computeCurrentPlacementScore = ({
         }
     })
 
-    return runningTotal
+    return {pts: runningTotal, quirky: quirkyMoves > 0}
 }

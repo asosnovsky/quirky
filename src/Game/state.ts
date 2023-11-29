@@ -1,6 +1,6 @@
 import { randomIndex } from "../helpers";
 import { Deck } from "./Deck";
-import { computeCurrentPlacementScore, figureDirection } from "./logic";
+import { ComputedScore, computeCurrentPlacementScore, figureDirection } from "./logic";
 import { GameBoardState, GamePiece, Player } from "./types";
 
 export class ManagedGameState {
@@ -123,13 +123,13 @@ export class ManagedGameState {
         })
     }
 
-    nextTurn(): number {
-        const pts = computeCurrentPlacementScore(this.state)
+    nextTurn(): ComputedScore {
+        const {pts, quirky} = computeCurrentPlacementScore(this.state)
         this.currentPlayer.points += pts;
         this.saveHistory();
         this.ensureAllHaveCards();
         this.swithToNextPlayer();
-        return pts;
+        return {pts, quirky};
     }
 
     forEachPlayer(fcn: (p: Player, pi: number) => void) {
