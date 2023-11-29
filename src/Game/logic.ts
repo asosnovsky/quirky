@@ -198,6 +198,7 @@ export const computeCurrentPlacementScore = ({
     lastPlacedPCardIndices: GameBoardState['lastPlacedPCardIndices'],
     currentDirection: GameBoardState['currentDirection'],
 }): number => {
+    let quirkyMoves = 0;
     let runningTotal = 0;
     const pMap = new CardBoardMap(placedCards);
     lastPlacedPCardIndices.forEach((ci, ii) => {
@@ -206,29 +207,42 @@ export const computeCurrentPlacementScore = ({
             okR = (currentDirection !== '⭥' || ii === 0),
             okU = (currentDirection !== '⟷' || ii === 0),
             okD = (currentDirection !== '⟷' || ii === 0);
+        let dL = 0,
+            dR = 0,
+            dU = 0,
+            dD = 0;
         let d = 1;
         while (okL || okR || okD || okU) {
             if (okL && (pMap.get(x - d, y) !== null)) {
                 runningTotal += (d === 1 ? 2 : 1)
+                dL += 1;
             } else {
                 okL = false
             }
             if (okR && (pMap.get(x + d, y) !== null)) {
                 runningTotal += ((d === 1 && !okL) ? 2 : 1)
+                dR += 1;
             } else {
                 okR = false
             }
             if (okU && (pMap.get(x, y + d) !== null)) {
                 runningTotal += (d === 1 ? 2 : 1)
+                dU += 1;
             } else {
                 okU = false
             }
             if (okD && (pMap.get(x, y - d) !== null)) {
                 runningTotal += ((d === 1 && !okU) ? 2 : 1)
+                dD += 1;
             } else {
                 okD = false
             }
             d += 1
+        }
+        if(dL === 5 || dR === 5 || dU === 5 || dD === 5) {
+            console.log("QUIRKY MOVE!")
+            quirkyMoves += 1
+            runningTotal += 6
         }
     })
 
