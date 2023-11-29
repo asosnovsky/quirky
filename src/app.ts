@@ -1,4 +1,6 @@
 import { Game } from "./Game";
+import { ManagedGameState } from "./Game/state";
+import { GameBoardState } from "./Game/types";
 import { MainMenu } from "./MainMenu";
 import { QuirkyElements } from "./elements";
 
@@ -10,3 +12,10 @@ const mm = new MainMenu(qElms, playerNames => {
     game.start();
 });
 mm.start();
+
+
+(window as any).startFromState = (state: GameBoardState) => {
+    qElms.show('game');
+    const game = new Game(qElms, ManagedGameState.fromState(state));
+    game.draw()
+} 

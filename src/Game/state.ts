@@ -25,6 +25,16 @@ export class ManagedGameState {
         )
     }
 
+    static fromState(state: GameBoardState) {
+        const deck = new Deck();
+        state.placedCards.forEach(({ piece }) => deck.removeCard(piece));
+        state.players.forEach(p => p.hand.forEach(deck.removeCard));
+        return new ManagedGameState(
+            deck,
+            state,
+        )
+    }
+
     constructor(
         private deck: Deck,
         private state: GameBoardState,

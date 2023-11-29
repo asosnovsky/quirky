@@ -1,6 +1,6 @@
 import { PIECE_SIZE, SVGNS } from "../constants";
 import { adjustPos, applyAttributesToElm, computeBBox } from "../helpers";
-import { Border, allowCardNextTo, allowcardNextToWithNoPlacedCardsButCardsOnBoard, allowcardNextToWithPreviouslyPlacedCards } from "./logic";
+import { Border } from "./logic";
 import { GameBoardState, GamePieceColors, GamePiecePictures, PlacedGamePiece, Positionable } from "./types";
 
 
@@ -66,55 +66,41 @@ export class SvgBoard {
 
     render = (state: GameBoardState) => {
         this.clearBoard();
-        const border = Border();
-        state.placedCards.forEach(p => {
-            this.drawPiece(p);
-            border.setFalse(...p.pos);
-            if (state.currentCardIndex !== null) {
-                const currentCard = state.players[state.currentPlayerIndex].hand[state.currentCardIndex];
-                if (allowCardNextTo(currentCard, p.piece)) {
-                    [-1, 1].forEach(d => {
-                        border.setTrueIf(p.pos[0], p.pos[1] + d)
-                        border.setTrueIf(p.pos[0] + d, p.pos[1])
-                    })
-                } else {
-                    [-1, 1].forEach(d => {
-                        border.setFalse(p.pos[0], p.pos[1] + d)
-                        border.setFalse(p.pos[0] + d, p.pos[1])
-                    })
-                }
-            }
-        });
+        const border = Border.fromState(state)
+        state.placedCards.forEach(this.drawPiece);
         if (state.placedCards.length === 0) {
             this.drawPlacementBox(0, 0)
             this.setViewBox([
                 { pos: [0, 0] }
             ]);
-        } else if (state.lastPlacedPCardIndices.length > 0 && state.currentCardIndex !== null) {
-            const currentCard = state.players[state.currentPlayerIndex].hand[state.currentCardIndex];
-            border.apply((x, y) => {
-                if (allowcardNextToWithPreviouslyPlacedCards(
-                    currentCard,
-                    [x, y],
-                    state.lastPlacedPCardIndices,
-                    state.placedCards,
-                    state.currentDirection,
-                )) {
-                    this.drawPlacementBox(x, y);
-                }
-            })
-        } else if (state.currentCardIndex !== null) {
-            const currentCard = state.players[state.currentPlayerIndex].hand[state.currentCardIndex];
-            border.apply((x, y) => {
-                if (allowcardNextToWithNoPlacedCardsButCardsOnBoard(
-                    currentCard,
-                    [x, y],
-                    state.placedCards,
-                )) {
-                    this.drawPlacementBox(x, y);
-                }
-            })
-            this.setViewBox(state.placedCards);
+        } else {
+            border.apply(this.drawPlacementBox)
         }
+        // } else if (state.lastPlacedPCardIndices.length > 0 && state.currentCardIndex !== null) {
+        //     const currentCard = state.players[state.currentPlayerIndex].hand[state.currentCardIndex];
+        //     border.apply((x, y) => {
+        //         if (allowcardNextToWithPreviouslyPlacedCards(
+        //             currentCard,
+        //             [x, y],
+        //             state.lastPlacedPCardIndices,
+        //             state.placedCards,
+        //             state.currentDirection,
+        //         )) {
+        //             this.drawPlacementBox(x, y);
+        //         }
+        //     })
+        // } else if (state.currentCardIndex !== null) {
+        //     const currentCard = state.players[state.currentPlayerIndex].hand[state.currentCardIndex];
+        //     border.apply((x, y) => {
+        //         if (allowcardNextToWithNoPlacedCardsButCardsOnBoard(
+        //             currentCard,
+        //             [x, y],
+        //             state.placedCards,
+        //         )) {
+        //             this.drawPlacementBox(x, y);
+        //         }
+        //     })
+        //     this.setViewBox(state.placedCards);
+        // }
     }
 }

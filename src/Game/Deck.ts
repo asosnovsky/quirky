@@ -39,4 +39,12 @@ export class Deck {
         }
         return cards
     }
+
+    removeCard = (card: GamePiece) => {
+        const i = this.cards.findIndex(p => {
+            return (p.color === card.color) &&
+                (p.picture === card.picture)
+        })
+        this.cards.splice(i, 1);
+    }
 }

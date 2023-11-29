@@ -1,30 +1,112 @@
 import { CardBoardMap } from "./CardBoardMap";
 import { GameBoardState, GamePiece, Positionable } from "./types";
 
-export const Border = () => {
-    const state: Record<string, boolean> = {};
-    const mi = (x: number, y: number): string => `${x},${y}`;
-    return {
-        getAll() {
-            return state;
-        },
-        get(x: number, y: number) {
-            return state[mi(x, y)] ?? false;
-        },
-        setTrueIf(x: number, y: number) {
-            state[mi(x, y)] = state[mi(x, y)] ?? true;
-        },
-        setFalse(x: number, y: number) {
-            state[mi(x, y)] = false;
-        },
-        apply(fcn: (x: number, y: number) => void) {
-            Object.keys(state).forEach(key => {
-                if (state[key]) {
-                    const [x, y] = key.split(',').map(Number);
-                    fcn(x, y);
+export class Border {
+    private state: Record<string, boolean> = {};
+    private mi = (x: number, y: number): string => `${x},${y}`;
+
+    getAll() {
+        return Object.keys(this.state).filter(k => this.state[k]).sort();
+    }
+    get(x: number, y: number) {
+        return this.state[this.mi(x, y)] ?? false;
+    }
+    setIf(x: number, y: number, state: boolean) {
+        if (state) {
+            this.setTrueIf(x, y)
+        } else {
+            this.setFalse(x, y)
+        }
+    }
+    setTrueIf(x: number, y: number) {
+        this.state[this.mi(x, y)] = this.state[this.mi(x, y)] ?? true;
+    }
+    setFalse(x: number, y: number) {
+        this.state[this.mi(x, y)] = false;
+    }
+    apply(fcn: (x: number, y: number) => void) {
+        Object.keys(this.state).forEach(key => {
+            if (this.state[key]) {
+                const [x, y] = key.split(',').map(Number);
+                fcn(x, y);
+            }
+        })
+    }
+
+    static fromState(state: GameBoardState): Border {
+        console.log('state ->', state)
+        const border = new Border()
+        const currentCard = state.currentCardIndex !== null ? state.players[state.currentPlayerIndex].hand[state.currentCardIndex] : null;
+        state.placedCards.forEach(({ pos }) => border.setFalse(...pos));
+        const pMap = new CardBoardMap(state.placedCards);
+
+
+        if (state.lastPlacedPCardIndices.length === 0) {
+            state.placedCards.forEach((p) => {
+                border.setFalse(...p.pos);
+                if (currentCard !== null) {
+                    if (allowCardNextTo(currentCard, p.piece)) {
+                        [-1, 1].forEach(d => {
+                            border.setIf(
+                                p.pos[0],
+                                p.pos[1] + d,
+                                pMap.allowedToPlace(currentCard, [p.pos[0], p.pos[1] + d]),
+                            )
+                            border.setIf(
+                                p.pos[0] + d,
+                                p.pos[1],
+                                pMap.allowedToPlace(currentCard, [p.pos[0] + d, p.pos[1]]),
+                            )
+                        })
+                    } else {
+                        [-1, 1].forEach(d => {
+                            border.setFalse(p.pos[0], p.pos[1] + d)
+                            border.setFalse(p.pos[0] + d, p.pos[1])
+                        })
+                    }
+                }
+            })
+        } else {
+            state.lastPlacedPCardIndices.forEach((pi) => {
+                const p = state.placedCards[pi];
+                if (currentCard !== null) {
+                    if (allowCardNextTo(currentCard, p.piece)) {
+                        [-1, 1].forEach(d => {
+                            if (state.currentDirection === '⟷' || state.currentDirection === null) {
+                                border.setIf(
+                                    p.pos[0],
+                                    p.pos[1] + d,
+                                    pMap.allowedToPlace(currentCard, [p.pos[0], p.pos[1] + d]),
+                                )
+                            } else {
+                                border.setFalse(
+                                    p.pos[0],
+                                    p.pos[1] + d,
+                                )
+                            }
+                            if (state.currentDirection === '⭥' || state.currentDirection === null) {
+                                border.setIf(
+                                    p.pos[0] + d,
+                                    p.pos[1],
+                                    pMap.allowedToPlace(currentCard, [p.pos[0] + d, p.pos[1]]),
+                                )
+                            } else {
+                                border.setFalse(
+                                    p.pos[0] + d,
+                                    p.pos[1],
+                                )
+                            }
+                        })
+                    } else {
+                        [-1, 1].forEach(d => {
+                            border.setFalse(p.pos[0], p.pos[1] + d)
+                            border.setFalse(p.pos[0] + d, p.pos[1])
+                        })
+                    }
                 }
             })
         }
+        return border
     }
 }
 
@@ -103,14 +185,6 @@ export const figureDirection = (p1: Positionable, p2: Positionable): GameBoardSt
         return null;
     }
 }
-
-export const makeComputeBoundaries = (
-    placedCards: GameBoardState['placedCards'],
-    lastPlacedPCardIndices: GameBoardState['lastPlacedPCardIndices'],
-) => (along: number = 0): [number, number] => lastPlacedPCardIndices.reduce<[number, number]>(([mn, mx], i) => {
-    const yy = placedCards[i].pos[along];
-    return [Math.max(mn, yy), Math.min(mx, yy)]
-}, [-Number.MAX_VALUE, Number.MAX_VALUE])
 
 export const computeCurrentPlacementScore = ({
     placedCards,
