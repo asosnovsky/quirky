@@ -7,6 +7,15 @@ export const GamePieceColors = {
     purple: '#9933FF',
 } as const
 
+export const GamePieceColorsInverse: Record<keyof typeof GamePieceColors, string> = {
+    red: GamePieceColors['orange'],
+    green: GamePieceColors['yellow'],
+    blue: GamePieceColors['purple'],
+    yellow: GamePieceColors['green'],
+    orange: GamePieceColors['red'],
+    purple: GamePieceColors['blue'],
+} as const
+
 export const GamePiecePictures = {
     cat: '🐈',
     owl: '🦉',

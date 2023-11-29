@@ -76,12 +76,43 @@ export class Game {
         })
     }
 
-    nextTurn() {
-        this.board.nextTurn();
-        this.draw()
+    drawPoints(pts: number, next: () => void) {
+        const pElm = document.createElement('span');
+        pElm.innerText = `+${pts}pts`
+        pElm.className = "points"
+        this.qElms.hoverPlayers.append(pElm);
+        const baseStart = 3;
+        const size = baseStart + 2 * (1 - Math.exp(-pts));
+        pElm.style.height = `${baseStart}em` 
+        pElm.style.width = `${baseStart}em` 
+        window.requestAnimationFrame(() => {
+            pElm.style.top = '-2em';
+            pElm.style.right = '-10em';
+            pElm.style.opacity = '0';
+            pElm.style.height = `${size}em`
+            pElm.style.width = `${size}em`
+            pElm.style.borderRadius = `100%`
+            window.setTimeout(() => {
+                pElm.remove();
+                next();
+            }, 1500);
+        })
     }
 
-    start() {
+    nextTurn() {
+        const pts = this.board.nextTurn();
+        console.log(pts);
+        if(pts > 0) {
+            this.drawHand(this.board.currentPlayer);
+            this.drawPoints(pts, () => {
+                this.drawHoverBox();
+                this.svgBoard.render(this.board.export()['state']);
+            });
+        }   else {
+            this.draw();
+        }
+    }
+    registerButtons() {
         this.qElms.bottomBarBtnEndTurn.onclick = () => {
             this.nextTurn();
         }
@@ -89,6 +120,9 @@ export class Game {
             this.board.undo();
             this.draw();
         }
+    }
+    start() {
+        this.registerButtons()
         this.nextTurn()
     }
 

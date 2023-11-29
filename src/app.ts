@@ -17,5 +17,7 @@ mm.start();
 (window as any).startFromState = (state: GameBoardState) => {
     qElms.show('game');
     const game = new Game(qElms, ManagedGameState.fromState(state));
+    game.registerButtons()
     game.draw()
+    console.log(game);
 } 

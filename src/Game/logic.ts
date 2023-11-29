@@ -5,6 +5,9 @@ export class Border {
     private state: Record<string, boolean> = {};
     private mi = (x: number, y: number): string => `${x},${y}`;
 
+    get length() {
+        return this.getAll().length;
+    }
     getAll() {
         return Object.keys(this.state).filter(k => this.state[k]).sort();
     }

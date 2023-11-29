@@ -1,7 +1,7 @@
 import { PIECE_SIZE, SVGNS } from "../constants";
 import { adjustPos, applyAttributesToElm, computeBBox } from "../helpers";
 import { Border } from "./logic";
-import { GameBoardState, GamePieceColors, GamePiecePictures, PlacedGamePiece, Positionable } from "./types";
+import { GameBoardState, GamePieceColors, GamePieceColorsInverse, GamePiecePictures, PlacedGamePiece, Positionable } from "./types";
 
 
 
@@ -11,7 +11,7 @@ export class SvgBoard {
         private onPlacementPieceClick: (x: number, y: number) => void,
     ) { }
 
-    drawPiece = ({ pos, piece }: PlacedGamePiece) => {
+    drawPiece = ({ pos, piece }: PlacedGamePiece, isLastPlaced: boolean = false) => {
         const apos = adjustPos(pos);
         const g = document.createElementNS(SVGNS, 'g');
         applyAttributesToElm(g, piece);
@@ -19,6 +19,9 @@ export class SvgBoard {
         applyAttributesToElm(rect, apos)
         rect.setAttribute('fill', GamePieceColors[piece.color])
         rect.setAttribute('className', 'piece')
+        if (isLastPlaced) {
+            rect.setAttribute('stroke', GamePieceColorsInverse[piece.color])
+        }
         g.appendChild(rect);
         const text = document.createElementNS(SVGNS, 'text');
         applyAttributesToElm(text, {
@@ -67,40 +70,29 @@ export class SvgBoard {
     render = (state: GameBoardState) => {
         this.clearBoard();
         const border = Border.fromState(state)
-        state.placedCards.forEach(this.drawPiece);
+        state.placedCards.forEach((p, i) => {
+            this.drawPiece(p, state.lastPlacedPCardIndices.find(v => v == i) !== undefined)
+        });
         if (state.placedCards.length === 0) {
             this.drawPlacementBox(0, 0)
             this.setViewBox([
                 { pos: [0, 0] }
             ]);
         } else {
-            border.apply(this.drawPlacementBox)
+            let xsum:number = 0, ysum: number = 0, total: number = 0;
+            border.apply((xx, yy) => {
+                this.drawPlacementBox(xx, yy);
+                xsum += xx;
+                ysum += yy;
+                total += 1;
+            })
+            if (total > 0) {
+                this.setViewBox([
+                    { pos: [xsum/total, ysum/total] }
+                ]);
+            }   else    {
+                this.setViewBox(state.placedCards)
+            }
         }
-        // } else if (state.lastPlacedPCardIndices.length > 0 && state.currentCardIndex !== null) {
-        //     const currentCard = state.players[state.currentPlayerIndex].hand[state.currentCardIndex];
-        //     border.apply((x, y) => {
-        //         if (allowcardNextToWithPreviouslyPlacedCards(
-        //             currentCard,
-        //             [x, y],
-        //             state.lastPlacedPCardIndices,
-        //             state.placedCards,
-        //             state.currentDirection,
-        //         )) {
-        //             this.drawPlacementBox(x, y);
-        //         }
-        //     })
-        // } else if (state.currentCardIndex !== null) {
-        //     const currentCard = state.players[state.currentPlayerIndex].hand[state.currentCardIndex];
-        //     border.apply((x, y) => {
-        //         if (allowcardNextToWithNoPlacedCardsButCardsOnBoard(
-        //             currentCard,
-        //             [x, y],
-        //             state.placedCards,
-        //         )) {
-        //             this.drawPlacementBox(x, y);
-        //         }
-        //     })
-        //     this.setViewBox(state.placedCards);
-        // }
     }
 }

@@ -123,11 +123,13 @@ export class ManagedGameState {
         })
     }
 
-    nextTurn() {
-        this.currentPlayer.points += computeCurrentPlacementScore(this.state);
+    nextTurn(): number {
+        const pts = computeCurrentPlacementScore(this.state)
+        this.currentPlayer.points += pts;
         this.saveHistory();
         this.ensureAllHaveCards();
         this.swithToNextPlayer();
+        return pts;
     }
 
     forEachPlayer(fcn: (p: Player, pi: number) => void) {

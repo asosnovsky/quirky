@@ -65,6 +65,10 @@
     gap: 0.25em;
 }
 
+#hover-box {
+    position: relative;
+}
+
 #hover-box #players-box {
     display: flex;
     flex-direction: row;
@@ -82,4 +86,20 @@
 #hover-box #players span.selected {
     font-weight: bold;
     color: navy;
+}
+
+#hover-box #players span.points {
+    position: absolute;
+    right: 0em;
+    top: 20em;
+    border-radius: 15px;
+    transition: top 1.5s ease-out 0s, 
+                right 1.5s ease-out 0s, 
+                opacity 1.5s ease-out 0s, 
+                height 1s ease-out 0s, 
+                width 1s ease-out 0s, 
+                border-radius 3s ease-out 0s; 
+    justify-content: center;
+    align-items: center;
+    display: flex;
 }
