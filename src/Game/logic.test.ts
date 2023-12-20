@@ -184,54 +184,250 @@ describe('computeCurrentPlacementScore', () => {
                         makeCard('blue', 'owl', [5, 0]),
                     ],
                 )
-            )).toStrictEqual({pts: 12, quirky: true})
+            )).toStrictEqual({ pts: 12, quirky: true })
         })
-        expect(computeCurrentPlacementScore(
-            makeInput(
-                [
-                ],
-                [
-                    makeCard('blue', 'bear', [0, 0]),
-                    makeCard('green', 'bear', [0, 1]),
-                    makeCard('orange', 'bear', [0, 2]),
-                    makeCard('purple', 'bear', [0, 3]),
-                    makeCard('red', 'bear', [0, 4]),
-                    makeCard('yellow', 'bear', [0, 5]),
-                ],
-            )
-        )).toStrictEqual({pts: 12, quirky: true})
-    })
-    test('quirky with some extra points case', () => {
-        expect(computeCurrentPlacementScore(
-            makeInput(
-                [
-                    makeCard('red', 'bear', [0, -1]),
-                ],
-                [
-                    makeCard('blue', 'bear', [0, 0]),
-                    makeCard('blue', 'whale', [1, 0]),
-                    makeCard('blue', 'cat', [2, 0]),
-                    makeCard('blue', 'cow', [3, 0]),
-                    makeCard('blue', 'monkey', [4, 0]),
-                    makeCard('blue', 'owl', [5, 0]),
-                ],
-            )
-        )).toStrictEqual({pts: 14, quirky: true})
-        expect(computeCurrentPlacementScore(
-            makeInput(
-                [
-                    makeCard('red', 'bear', [1, 0]),
-                ],
-                [
-                    makeCard('blue', 'bear', [0, 0]),
-                    makeCard('green', 'bear', [0, 1]),
-                    makeCard('orange', 'bear', [0, 2]),
-                    makeCard('purple', 'bear', [0, 3]),
-                    makeCard('red', 'bear', [0, 4]),
-                    makeCard('yellow', 'bear', [0, 5]),
-                ],
-            )
-        )).toStrictEqual({pts: 14, quirky: true})
+        test('simple case #2', () => {
+            expect(computeCurrentPlacementScore(
+                makeInput(
+                    [
+                    ],
+                    [
+                        makeCard('blue', 'bear', [0, 0]),
+                        makeCard('green', 'bear', [0, 1]),
+                        makeCard('orange', 'bear', [0, 2]),
+                        makeCard('purple', 'bear', [0, 3]),
+                        makeCard('red', 'bear', [0, 4]),
+                        makeCard('yellow', 'bear', [0, 5]),
+                    ],
+                )
+            )).toStrictEqual({ pts: 12, quirky: true })
+        })
+        test('quirky with some extra points case', () => {
+            expect(computeCurrentPlacementScore(
+                makeInput(
+                    [
+                        makeCard('red', 'bear', [0, -1]),
+                    ],
+                    [
+                        makeCard('blue', 'bear', [0, 0]),
+                        makeCard('blue', 'whale', [1, 0]),
+                        makeCard('blue', 'cat', [2, 0]),
+                        makeCard('blue', 'cow', [3, 0]),
+                        makeCard('blue', 'monkey', [4, 0]),
+                        makeCard('blue', 'owl', [5, 0]),
+                    ],
+                )
+            )).toStrictEqual({ pts: 14, quirky: true })
+            expect(computeCurrentPlacementScore(
+                makeInput(
+                    [
+                        makeCard('red', 'bear', [1, 0]),
+                    ],
+                    [
+                        makeCard('blue', 'bear', [0, 0]),
+                        makeCard('green', 'bear', [0, 1]),
+                        makeCard('orange', 'bear', [0, 2]),
+                        makeCard('purple', 'bear', [0, 3]),
+                        makeCard('red', 'bear', [0, 4]),
+                        makeCard('yellow', 'bear', [0, 5]),
+                    ],
+                )
+            )).toStrictEqual({ pts: 14, quirky: true })
+        })
+        test('quirky with partial and additional', () => {
+            expect(computeCurrentPlacementScore(
+                {
+                    "lastPlacedPCardIndices": [
+                        15,
+                        16,
+                        17
+                    ],
+                    "currentDirection": "⭥",
+                    "placedCards": [
+                        {
+                            "piece": {
+                                "color": "red",
+                                "picture": "cow"
+                            },
+                            "pos": [
+                                0,
+                                0
+                            ]
+                        },
+                        {
+                            "piece": {
+                                "color": "green",
+                                "picture": "cow"
+                            },
+                            "pos": [
+                                1,
+                                0
+                            ]
+                        },
+                        {
+                            "piece": {
+                                "color": "green",
+                                "picture": "owl"
+                            },
+                            "pos": [
+                                1,
+                                1
+                            ]
+                        },
+                        {
+                            "piece": {
+                                "color": "orange",
+                                "picture": "owl"
+                            },
+                            "pos": [
+                                2,
+                                1
+                            ]
+                        },
+                        {
+                            "piece": {
+                                "color": "green",
+                                "picture": "monkey"
+                            },
+                            "pos": [
+                                1,
+                                2
+                            ]
+                        },
+                        {
+                            "piece": {
+                                "color": "purple",
+                                "picture": "monkey"
+                            },
+                            "pos": [
+                                0,
+                                2
+                            ]
+                        },
+                        {
+                            "piece": {
+                                "color": "green",
+                                "picture": "bear"
+                            },
+                            "pos": [
+                                1,
+                                3
+                            ]
+                        },
+                        {
+                            "piece": {
+                                "color": "green",
+                                "picture": "owl"
+                            },
+                            "pos": [
+                                2,
+                                3
+                            ]
+                        },
+                        {
+                            "piece": {
+                                "color": "purple",
+                                "picture": "owl"
+                            },
+                            "pos": [
+                                3,
+                                1
+                            ]
+                        },
+                        {
+                            "piece": {
+                                "color": "yellow",
+                                "picture": "owl"
+                            },
+                            "pos": [
+                                3,
+                                2
+                            ]
+                        },
+                        {
+                            "piece": {
+                                "color": "yellow",
+                                "picture": "monkey"
+                            },
+                            "pos": [
+                                -1,
+                                2
+                            ]
+                        },
+                        {
+                            "piece": {
+                                "color": "yellow",
+                                "picture": "bear"
+                            },
+                            "pos": [
+                                -1,
+                                3
+                            ]
+                        },
+                        {
+                            "piece": {
+                                "color": "yellow",
+                                "picture": "whale"
+                            },
+                            "pos": [
+                                -1,
+                                4
+                            ]
+                        },
+                        {
+                            "piece": {
+                                "color": "yellow",
+                                "picture": "cat"
+                            },
+                            "pos": [
+                                -1,
+                                1
+                            ]
+                        },
+                        {
+                            "piece": {
+                                "color": "blue",
+                                "picture": "cat"
+                            },
+                            "pos": [
+                                -2,
+                                1
+                            ]
+                        },
+                        {
+                            "piece": {
+                                "color": "blue",
+                                "picture": "monkey"
+                            },
+                            "pos": [
+                                -2,
+                                2
+                            ]
+                        },
+                        {
+                            "piece": {
+                                "color": "orange",
+                                "picture": "monkey"
+                            },
+                            "pos": [
+                                -3,
+                                2
+                            ]
+                        },
+                        {
+                            "piece": {
+                                "color": "red",
+                                "picture": "monkey"
+                            },
+                            "pos": [
+                                -4,
+                                2
+                            ]
+                        }
+                    ]
+                }
+            )).toStrictEqual({ pts: 14, quirky: true })
+        })
     })
 })
 

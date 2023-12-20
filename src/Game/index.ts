@@ -108,7 +108,6 @@ export class Game {
 
     nextTurn() {
         const {pts, quirky} = this.board.nextTurn();
-        console.log(pts);
         if(pts > 0) {
             this.drawHand(this.board.currentPlayer);
             this.drawPoints({pts, quirky}, () => {
@@ -119,6 +118,7 @@ export class Game {
             this.draw();
         }
     }
+    
     registerButtons() {
         this.qElms.bottomBarBtnEndTurn.onclick = () => {
             this.nextTurn();

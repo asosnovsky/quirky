@@ -1,4 +1,4 @@
-import { randomIndex } from "../helpers";
+import { encodeData, randomIndex } from "../helpers";
 import { Deck } from "./Deck";
 import { ComputedScore, computeCurrentPlacementScore, figureDirection } from "./logic";
 import { GameBoardState, GamePiece, Player } from "./types";
@@ -67,6 +67,11 @@ export class ManagedGameState {
 
     private saveHistory() {
         this.history.push(JSON.parse(JSON.stringify([this.state, this.deck.export()])))
+        window.location.hash = `state=${encodeData(this.export())}`
+    }
+
+    updateLocationHash() {
+        window.location.hash = `state=${encodeData(this.export())}`
     }
 
     export() {
@@ -100,12 +105,14 @@ export class ManagedGameState {
             this.state.currentCardIndex = null;
             return true
         }
+        this.updateLocationHash();
         return false
     }
 
     setCurrentCard(index: number) {
         this.saveHistory();
         this.state.currentCardIndex = index;
+        this.updateLocationHash();
     }
 
     private swithToNextPlayer() {
@@ -124,11 +131,12 @@ export class ManagedGameState {
     }
 
     nextTurn(): ComputedScore {
+        this.saveHistory();
         const {pts, quirky} = computeCurrentPlacementScore(this.state)
         this.currentPlayer.points += pts;
-        this.saveHistory();
         this.ensureAllHaveCards();
         this.swithToNextPlayer();
+        this.updateLocationHash();
         return {pts, quirky};
     }
 

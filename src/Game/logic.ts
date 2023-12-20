@@ -37,7 +37,6 @@ export class Border {
     }
 
     static fromState(state: GameBoardState): Border {
-        console.log('state ->', state)
         const border = new Border()
         const currentCard = state.currentCardIndex !== null ? state.players[state.currentPlayerIndex].hand[state.currentCardIndex] : null;
         state.placedCards.forEach(({ pos }) => border.setFalse(...pos));
@@ -243,11 +242,12 @@ export const computeCurrentPlacementScore = ({
             }
             d += 1
         }
-        if(dL === 5 || dR === 5 || dU === 5 || dD === 5) {
+        if( (dL + dR) === 5 || (dU + dD) === 5) {
             console.log("QUIRKY MOVE!")
             quirkyMoves += 1
             runningTotal += 6
         }
+        // pMap.setPhantomDataPoint(x, y, )
     })
 
     return {pts: runningTotal, quirky: quirkyMoves > 0}

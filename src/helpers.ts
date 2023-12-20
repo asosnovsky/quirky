@@ -1,5 +1,5 @@
 import { PIECE_SIZE, TOTAL_SIZE } from "./constants";
-import { GameBoardState, Positionable } from "./Game/types";
+import { Positionable } from "./Game/types";
 
 export const computeBBox = (state: Positionable[]): [[number, number], [number, number]] => state.reduce(([X, Y], { pos: [x, y] }) => [
     [Math.min(X[0], x), Math.max(X[1], x)],
@@ -19,8 +19,8 @@ export function randomChoice<T>(arr: T[]): T {
     return arr[randomIndex(arr.length - 1)]
 }
 
-export const encodeState = (gameState: GameBoardState) =>
-    btoa(JSON.stringify(gameState))
+export const encodeData = (data: any) =>
+    btoa(encodeURIComponent(JSON.stringify(data)))
 
-export const decodeState = (encodedState: string): GameBoardState =>
-    JSON.parse(atob(encodedState))
+export const decodeData = <T>(raw: string): T =>
+    JSON.parse(decodeURIComponent(atob(raw)))
