@@ -2,9 +2,9 @@
   "name": "quirky",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
   "scripts": {
     "start": "parcel src/index.html",
+    "build": "parcel build --log-level verbose --no-cache src/index.html",
     "test": "jest"
   },
   "author": "ariel@sosnovsky.ca",
