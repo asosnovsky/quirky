@@ -1,4 +1,4 @@
-FROM node:16 as builder
+FROM node:21 as builder
 
 WORKDIR /webapp
 
@@ -8,10 +8,10 @@ RUN npm install
 COPY .parcelrc .parcelrc
 COPY babel.config.js babel.config.js
 COPY src src
-# RUN npm run build
+RUN npm run build
 
-# FROM nginx
+FROM nginx
 
-# COPY --from=builder /webapp/dist /usr/share/nginx/html
+COPY --from=builder /webapp/dist /usr/share/nginx/html
 
-# EXPOSE 80
+EXPOSE 80
